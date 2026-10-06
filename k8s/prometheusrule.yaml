@@ -1,0 +1,51 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: demo-app-alerts
+  namespace: demo
+  labels:
+    release: monitoring
+spec:
+  groups:
+    - name: demo-app.rules
+      rules:
+        - alert: AppDown
+          expr: absent(up{job="demo-app", namespace="demo"} == 1)
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "demo-app down hai"
+            description: "Koi bhi demo-app pod 1 minute se scrape nahi ho raha."
+
+        - alert: HighCPUUsage
+          expr: |
+            sum by (pod) (rate(container_cpu_usage_seconds_total{namespace="demo", container="demo-app"}[2m]))
+            /
+            sum by (pod) (kube_pod_container_resource_requests{namespace="demo", container="demo-app", resource="cpu"})
+            > 0.8
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High CPU on {{ $labels.pod }}"
+            description: "Pod CPU request ke 80% se upar hai."
+
+        - alert: HighErrorRate
+          expr: |
+            sum(rate(http_requests_total{namespace="demo", status=~"5.."}[5m]))
+            /
+            sum(rate(http_requests_total{namespace="demo"}[5m])) > 0.05
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "5xx error rate 5% se zyada hai"
+
+        - alert: PodRestartingFrequently
+          expr: increase(kube_pod_container_status_restarts_total{namespace="demo"}[10m]) > 2
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Pod {{ $labels.pod }} baar baar restart ho raha hai"
