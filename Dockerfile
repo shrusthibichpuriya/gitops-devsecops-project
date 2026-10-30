@@ -1,4 +1,5 @@
 FROM node:20-alpine
+RUN npm install -g npm@latest
 WORKDIR /usr/src/app
 COPY app/package*.json ./
 RUN npm ci --omit=dev
