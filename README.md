@@ -87,12 +87,6 @@ CI/CD Setup (if you fork this repo)
 
 Add these secrets under Settings → Secrets and variables → Actions:
 
-Secret	Description
--------------------------------------------
-DOCKERHUB_USERNAME	Your Docker Hub username
--------------------------------------------
-DOCKERHUB_TOKEN	A Docker Hub access token
-
 Push to main and the pipeline will run automatically from the Actions tab.
 
 Pipeline Status
