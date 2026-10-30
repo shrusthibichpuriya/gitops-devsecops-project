@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: demo-app
-          image: shrusthi_13/gitops-demo-app:latest
+          image: shrusthi/gitops-demo-app:8a8318ec92887ec24f2f348cd290ac1e1af6687a
           ports:
             - containerPort: 3000
           resources:
